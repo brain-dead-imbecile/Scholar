@@ -1,0 +1,420 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScholarSys+ | Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* :root variables moved to style.css */
+
+        body {
+            /* base styles moved to style.css */
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--sidebar-green) 0%, #06201a 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            font-weight: 800;
+            margin: 0 0 2rem 0;
+            letter-spacing: -1px;
+            color: var(--accent-yellow);
+        }
+
+        .sidebar nav {
+            flex: 1;
+        }
+
+        .sidebar nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .sidebar nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-top: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #1f2937;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--primary-green);
+            border-bottom: 2px solid var(--bg-gray);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .course-item {
+            border-left: 4px solid var(--light-green);
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-item strong {
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        .course-item span {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #6b7280;
+        }
+
+        .tag {
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .tag-quiz {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .tag-exam {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .tag-assignment {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .message-item {
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<button class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+</button>
+
+<div class="sidebar" id="sidebar">
+    <h2>ScholarSys+</h2>
+    <nav>
+        <a onclick="showTab('summary')" class="tab-link active" data-tab="summary">Summary</a>
+        <a onclick="showTab('courses')" class="tab-link" data-tab="courses">My Courses</a>
+        <a onclick="showTab('grades')" class="tab-link" data-tab="grades">Grades & Exams</a>
+        <a onclick="showTab('attendance')" class="tab-link" data-tab="attendance">Attendance</a>
+        <a onclick="showTab('messages')" class="tab-link" data-tab="messages">Messages</a>
+        <a onclick="showTab('profile')" class="tab-link" data-tab="profile">Profile Settings</a>
+    </nav>
+    <a href="/logout/" class="logout-btn">Logout</a>
+</div>
+
+<div class="main-content" id="main-content">
+    <div class="top-bar">
+        <h1>Welcome, {{ user.get_full_name|default:user.username }}</h1>
+        <div style="text-align: right;">
+            <span style="font-weight: 600;">ID: {{ user.userprofile.student_id|default:"N/A" }}</span><br>
+            <span style="font-size: 0.8rem; color: #6b7280;">Section: {{ user.userprofile.section }}</span>
+        </div>
+    </div>
+
+    <!-- Summary Tab -->
+    <div id="summary" class="tab-content active">
+        <div class="grid">
+            <div class="card">
+                <h3>Current Courses</h3>
+                {% for course in courses|slice:":5" %}
+                <div class="course-item">
+                    <strong>{{ course.course_number }}: {{ course.name }}</strong>
+                    <span>{{ course.schedule }}</span>
+                </div>
+                {% empty %}
+                <p>No courses found for section {{ user.userprofile.section }}.</p>
+                {% endfor %}
+                {% if courses|length > 5 %}
+                <a onclick="showTab('courses')"
+                    style="color: var(--primary-green); cursor: pointer; font-weight: 600;">View all courses &rarr;</a>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h3>Latest Messages</h3>
+                {% for msg in messages|slice:":3" %}
+                <div class="message-item">
+                    <div class="message-header">
+                        <strong>{{ msg.sender.username }}</strong>
+                        <span>{{ msg.timestamp|date:"M d, H:i" }}</span>
+                    </div>
+                    {{ msg.content }}
+                </div>
+                {% empty %}
+                <p>No new messages.</p>
+                {% endfor %}
+                {% if messages|length > 3 %}
+                <a onclick="showTab('messages')"
+                    style="color: var(--primary-green); cursor: pointer; font-weight: 600;">View all messages &rarr;</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Courses Tab -->
+    <div id="courses" class="tab-content">
+        <div class="card">
+            <h3>All Courses</h3>
+            {% for course in courses %}
+            <div class="course-item">
+                <strong>{{ course.course_number }}: {{ course.name }}</strong>
+                <span>{{ course.schedule }}</span>
+                <br>
+                <span style="color: #6b7280; font-size: 0.85rem;">Units: {{ course.units }} | Teacher: {{
+                    course.teacher.get_full_name }}</span>
+            </div>
+            {% empty %}
+            <p>No courses found.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Grades Tab -->
+    <div id="grades" class="tab-content">
+        <div class="card">
+            <h3>Performance Records (Quizzes, Exams, Assignments)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Subject</th>
+                        <th>Type</th>
+                        <th>Score/Grade</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for perf in performances %}
+                    <tr>
+                        <td>{{ perf.date|date:"Y-m-d" }}</td>
+                        <td>{{ perf.subject }}</td>
+                        <td><span class="tag tag-{{ perf.performance_type }}">{{ perf.performance_type }}</span></td>
+                        <td style="font-weight: 800; color: var(--primary-green);">{{ perf.grade }}</td>
+                        <td>{{ perf.remarks|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No performance records recorded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Attendance Tab -->
+    <div id="attendance" class="tab-content">
+        <div class="card">
+            <h3>Attendance Summary</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Course</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance %}
+                    <tr>
+                        <td>{{ record.date|date:"Y-m-d" }}</td>
+                        <td>{{ record.classroom.name }}</td>
+                        <td>
+                            <span
+                                style="text-transform: capitalize; font-weight: 600; color: {% if record.status == 'present' %}#166534{% elif record.status == 'absent' %}#991b1b{% else %}#854d0e{% endif %};">
+                                {{ record.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">No attendance records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Messages Tab -->
+    <div id="messages" class="tab-content">
+        <div class="card">
+            <h3>All Messages</h3>
+            {% for msg in messages %}
+            <div class="message-item">
+                <div class="message-header">
+                    <strong>{{ msg.sender.username }}</strong>
+                    <span>{{ msg.timestamp|date:"M d, H:i" }}</span>
+                </div>
+                {{ msg.content }}
+            </div>
+            {% empty %}
+            <p>No messages.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Profile Tab -->
+    <div id="profile" class="tab-content">
+        <div class="card">
+            <h3>Profile Settings</h3>
+            <form action="/profile/update/" method="POST" style="max-width: 500px;">
+                {% csrf_token %}
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
+                    <input type="text" name="name" value="{{ user.get_full_name }}"
+                        style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #ddd;" required>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email</label>
+                    <input type="email" name="email" value="{{ user.email }}"
+                        style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #ddd;" required>
+                </div>
+                <button type="submit"
+                    style="background: var(--light-green); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600;">Update
+                    Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showTab(tabId) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        // Show selected tab
+        document.getElementById(tabId).classList.add('active');
+
+        // Update sidebar active state
+        document.querySelectorAll('.sidebar nav a').forEach(link => {
+            link.classList.remove('active');
+        });
+        const activeLink = document.querySelector(`.sidebar nav a[data-tab="${tabId}"]`);
+        if (activeLink) activeLink.classList.add('active');
+
+        // On mobile, close sidebar after selection
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('open');
+        }
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+
+        sidebar.classList.toggle('open');
+
+        // Push content on desktop if sidebar is open
+        if (window.innerWidth > 768) {
+            mainContent.classList.toggle('pushed');
+        }
+    }
+</script>
+
+</html>
