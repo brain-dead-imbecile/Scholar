@@ -1,0 +1,115 @@
+:root {
+    /* New Palette */
+    --primary-green: #58626C;
+    /* Dark Grey - keeping variable name for compatibility */
+    --light-green: #ECC1A1;
+    /* Peach - keeping variable name for compatibility */
+    --bg-gray: #F5F1EE;
+    /* Off-White - keeping variable name for compatibility */
+    --sidebar-green: #58626C;
+    /* Dark Grey - keeping variable name for compatibility */
+    --accent-yellow: #ECC1A1;
+    /* Peach - keeping variable name for compatibility */
+
+    /* Additional derived colors or aliases if needed */
+    --card-bg: #FFFFFF;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-dark: #1F2937;
+    --text-light: #F9FAFB;
+    --input-border: #DAC8BE;
+    /* Beige for inputs */
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    background-color: var(--bg-gray);
+}
+
+/* Sidebar & Layout */
+.sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, var(--sidebar-green) 0%, #06201a 100%);
+    color: white;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed;
+    height: 100%;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    /* Hidden by default */
+}
+
+.sidebar.open {
+    transform: translateX(0);
+    /* Slide in */
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem 3rem;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-left: 0;
+    width: 100%;
+}
+
+/* Optional: Push content when sidebar is open on large screens */
+@media (min-width: 769px) {
+    .main-content.pushed {
+        margin-left: 260px;
+        width: calc(100% - 260px);
+    }
+}
+
+.menu-toggle {
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 1100;
+    /* Above sidebar */
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.menu-toggle:hover {
+    transform: scale(1.1);
+}
+
+
+/* Tabs */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.sidebar nav a {
+    cursor: pointer;
+}
+
+.sidebar nav a.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 700;
+}

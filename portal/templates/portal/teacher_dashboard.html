@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScholarSys+ | Teacher Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* :root variables moved to style.css */
+
+        body {
+            /* base styles moved to style.css */
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--sidebar-green) 0%, #06201a 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            margin-right: 10px;
+        }
+
+        .sidebar h2 {
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -1px;
+            color: #fbbf24;
+        }
+
+        .sidebar nav {
+            flex: 1;
+        }
+
+        .sidebar nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .sidebar nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar h1 {
+            margin: 0;
+            font-weight: 800;
+            color: #1f2937;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--primary-green);
+        }
+
+        .class-card {
+            background: var(--light-green);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>ScholarSys+</h2>
+        </div>
+        <nav>
+            <a href="/dashboard/">Dashboard</a>
+            <a href="#">My Classes</a>
+            <a href="#">Student Records</a>
+            <a href="#">Messages</a>
+            <a href="/admin/">Admin Panel</a>
+        </nav>
+        <a href="/logout/"
+            style="margin-top: auto; color: white; text-decoration: none; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 10px; text-align: center; font-weight: 600;">Logout</a>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <div class="top-bar">
+            <h1>Teacher Portal</h1>
+        </div>
+
+        <div class="card">
+            <h3>Your Classrooms</h3>
+            <div class="classroom-list">
+                {% for class in classrooms %}
+                <a href="{% url 'classroom_detail' class.id %}"
+                    style="text-decoration: none; color: inherit; display: block; margin-bottom: 1rem;">
+                    <div class="class-card">
+                        {{ class.name }}<br>
+                        <span style="font-size: 0.8rem; font-weight: 400;">Section: {{ class.section }}</span>
+                    </div>
+                </a>
+                {% empty %}
+                <p>No classrooms assigned.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Recent Communications</h3>
+            {% for msg in messages %}
+            <div style="padding: 1rem 0; border-bottom: 1px solid #eee;">
+                <strong>{{ msg.sender.username }}:</strong> {{ msg.content }}
+            </div>
+            {% empty %}
+            <p>No recent messages.</p>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+
+            sidebar.classList.toggle('open');
+
+            if (window.innerWidth > 768) {
+                mainContent.classList.toggle('pushed');
+            }
+        }
+    </script>
+</body>
+
+</html>
